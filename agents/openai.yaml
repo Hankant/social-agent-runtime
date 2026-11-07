@@ -1,0 +1,4 @@
+interface:
+  display_name: "多 Agent 工程稳健性支援"
+  short_description: "为已有多 Agent 框架提供并发提速、限流控制、预算台账、断点恢复与故障验证"
+  default_prompt: "使用 $social-agent-runtime 为现有框架接入工程稳健性支持，检查并发、限流、预算、缓存、恢复和日志，保持模型规则并离线验证。"
