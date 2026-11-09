@@ -1,6 +1,6 @@
 ---
 name: social-agent-runtime
-description: Provide engineering reliability support for existing LLM multi-agent frameworks and batch runtimes. Audit and implement bounded concurrency, rate control, budgets, caching, resumable execution, telemetry, and offline fault tests across SocioVerse, custom ABMs, and other agent systems.
+description: Provide engineering reliability support for existing LLM multi-agent frameworks and batch runtimes. Audit and implement bounded concurrency, rate control, budgets, caching, resumable execution, telemetry, validation harness integration, and offline fault tests. Keep synthetic checks separate from real-world validation.
 ---
 
 # Social Agent Runtime
@@ -24,6 +24,7 @@ description: Provide engineering reliability support for existing LLM multi-agen
 - 接口适配、状态所有权与执行一致性审查：[工程接入检查](references/architecture-review.md)。
 - 实现并发、续跑、限流或日志：[运行合同](references/runtime-contract.md)。
 - 排查慢、token突增或故障，验证运行稳定性：[故障验证与测量](references/verification.md)。
+- 接入验证器、合成测试、恢复检验或独立评价：[验证器合同](references/validator.md)，可复制[验证计划模板](assets/validation-plan.md)。
 - 需要了解抽取依据和哪些历史选择不能照搬：[来源与维护边界](references/origin.md)。
 
 ## 不可静默改变的边界
@@ -46,7 +47,11 @@ description: Provide engineering reliability support for existing LLM multi-agen
 
 ## 验证与交付
 
-先用假的 API 和可控时钟验证，禁止用模拟输出充当真实实验结果。运行本 skill 基础模块测试：
+验证前明确生成器、被测系统和评价器的职责及输入权限。先定义预期、指标、容差与失败条件，再运行；生成真值和留出答案不能进入agent输入。将执行一致性、参数/模型恢复、统计误报与检出、真人留出预测分别报告。合成显著性不证明现实有效，第二LLM不自动构成独立真人证据。
+
+先用假的 API 和可控时钟验证，禁止用模拟输出充当真实实验结果。测试数据、缓存及完成状态与live隔离。已知差异测试应配合适用的零效应/负对照和边界情况，保存所有重复与失败，不改指标或追加样本直到显著。具体参数与统计计划由目标项目提供，skill不代选心理机制。
+
+验证器参考和模板是接入规范，不是已经实现的通用统计引擎。运行本 skill 基础模块测试：
 
 `python scripts/test_bounded_batch.py`
 

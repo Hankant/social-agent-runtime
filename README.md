@@ -14,6 +14,7 @@
 | 有界滚动并发、稳定返回、失败收尾 | `assets/bounded_batch.py` 可运行组件 |
 | 规范化请求日志的吞吐与 token 汇总 | `scripts/summarize_events.py` 可运行工具 |
 | 限流、预算、持久缓存和断点恢复 | 接口合同、实现要求及故障矩阵；需适配目标项目 |
+| 分层验证器：真值隔离、负对照、恢复检查与真人留出边界 | [接入规范](references/validator.md)及[验证计划模板](assets/validation-plan.md)，需适配指标和生成器；未附通用统计引擎 |
 | 基础组件正确性 | 12 项标准库离线测试 |
 
 当前不是完整的生产运行引擎。没有附带 API 客户端、持久预算存储、限流器或完整检查点管理器；不承诺安装后自动获得这些能力。也尚未完成多个独立框架的集成验证。
@@ -49,6 +50,7 @@ git clone https://github.com/Hankant/social-agent-runtime.git "$env:USERPROFILE\
 - “排查 429 后长期降速，检查同波失败、SDK 重试和恢复门控。”
 - “检查重启是否重复调用已成功任务，以及预算和尝试次数是否继承。”
 - “分析实际请求中的 token，分开输入、输出、重试、缓存和未知 usage。”
+- “为项目接入验证器，分离生成器、被测系统与评价器，先测零效应误报和已知差异恢复，不把合成显著性当现实证明。”
 
 Skill 默认先检查已有项目，不会因为审查请求而自动启动付费任务。是否继续真实请求、如何处理个人失败和未决结果，遵守用户及目标项目的授权。
 
@@ -70,11 +72,13 @@ python -B -m unittest discover -s scripts -p "test_*.py" -v
 SKILL.md                         Skill 入口
 agents/openai.yaml               显示名称与调用提示
 assets/bounded_batch.py          有界并发基础组件
+assets/validation-plan.md        目标项目验证计划模板
 scripts/summarize_events.py      规范化 JSONL 离线汇总
 scripts/test_*.py                离线测试
 references/architecture-review.md 工程接入检查
 references/runtime-contract.md  执行、恢复、限流及预算合同
 references/verification.md      故障矩阵、性能与用量测量
+references/validator.md         验证器接入、合成检查与证据分层
 references/origin.md            来源与维护边界
 ```
 
